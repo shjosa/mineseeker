@@ -12,22 +12,26 @@ export const BoxSeeker = () => {
         const tempGrid = [...grid];
         tempGrid[location[0]][location[1]].revealed = true;
         if (currBombCount === 0) {
-            genBombs(tempGrid);
+            genBombs(tempGrid, location);
         }
         setGrid(tempGrid);
     }
 
-    function genBombs(tempGrid: TileData[][]) {
+    function genBombs(tempGrid: TileData[][], location: Array<number>) {
         let curBC = currBombCount;
-        while (curBC < 5) {
+        while (curBC < 90) {
             let row = Math.floor(Math.random() * (tempGrid.length))
             let col = Math.floor(Math.random() * (tempGrid[row].length))
-            if (tempGrid[row][col].status !== -1) {
+            if (tempGrid[row][col].status !== -1 && (row != location[0] || col != location[1])) {
                 tempGrid[row][col].bombify();
                 curBC += 1;
             }
         }
         setCurrBombCount(curBC);
+    }
+
+    function genHints(tempGrid: TileData[][]) {
+
     }
 
     useEffect(() => {
@@ -64,7 +68,7 @@ const DrawBox = (props: { grid: TileData[][], revealTile: (a: Array<number>) => 
                                 <th key={item.key}>
                                     <GridButton rowLength={row.length} open={item.revealed} onClick={() => props.revealTile([i,j])}>
                                         {item.revealed && item.status}
-                                        {!item.revealed && " "}
+                                        {!item.revealed && item.status}
                                     </GridButton>
                                 </th>
                             );
