@@ -18,6 +18,7 @@ export const GlobalStyle = createGlobalStyle`
 
     body {
         font-family: 'Poppins';
+        background-color: #EFEFF0;
     }
 `;
 
@@ -27,7 +28,7 @@ export const NavbarContainer = styled.nav`
     display: flex;
     flex-direction: row;
     justify-content: space-between;
-    background-color: purple;
+    background-color: #023436;
 `;
 
 export const NavbarLinkContainer = styled.div`
