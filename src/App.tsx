@@ -1,25 +1,22 @@
 import React from 'react';
-import logo from './logo.svg';
-import './App.css';
+import { Link, Outlet } from 'react-router-dom';
+import { GlobalStyle, NavbarContainer, NavbarLink, NavbarLinkContainer, NavbarText, NavbarTextContainer } from './App.styles';
 
 function App() {
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.tsx</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
+    <>
+      <GlobalStyle />
+      <NavbarContainer>
+        <NavbarTextContainer>
+          <NavbarText>Mineseeker</NavbarText>
+        </NavbarTextContainer>
+        <NavbarLinkContainer>
+          <Link to="/box-seeker"><NavbarLink>Boxseeker</NavbarLink></Link>
+          <Link to="/hex-seeker"><NavbarLink>Hexseeker</NavbarLink></Link>
+        </NavbarLinkContainer>
+      </NavbarContainer>
+      <Outlet />
+    </>
   );
 }
 
