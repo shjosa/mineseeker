@@ -19,19 +19,56 @@ export const BoxSeeker = () => {
 
     function genBombs(tempGrid: TileData[][], location: Array<number>) {
         let curBC = currBombCount;
-        while (curBC < 90) {
+        while (curBC < 5) {
             let row = Math.floor(Math.random() * (tempGrid.length))
             let col = Math.floor(Math.random() * (tempGrid[row].length))
             if (tempGrid[row][col].status !== -1 && (row != location[0] || col != location[1])) {
                 tempGrid[row][col].bombify();
+                genHints(tempGrid, [row, col]);
                 curBC += 1;
             }
         }
         setCurrBombCount(curBC);
     }
 
-    function genHints(tempGrid: TileData[][]) {
+    function genHints(tempGrid: TileData[][], location: Array<number>) {
+        // top left
+        if (location[0] > 0 && location[1] > 0) {
+            increaseHint(tempGrid, [location[0]-1, location[1]-1]);
+        }
+        // left
+        if (location[1] > 0) {
+            increaseHint(tempGrid, [location[0], location[1]-1]);
+        }
+        // bottom left
+        if (location[0] < tempGrid.length - 1 && location[1] > 0) {
+            increaseHint(tempGrid, [location[0]+1, location[1]-1]);
+        }
+        // bottom
+        if (location[0] < tempGrid.length - 1) {
+            increaseHint(tempGrid, [location[0]+1, location[1]]);
+        }
+        // bottom right
+        if (location[0] < tempGrid.length - 1 && location[1] < tempGrid[location[0]].length - 1) {
+            increaseHint(tempGrid, [location[0]+1, location[1]+1]);
+        }
+        // right
+        if (location[1] < tempGrid[location[0]].length - 1) {
+            increaseHint(tempGrid, [location[0], location[1]+1]);
+        }
+        // top right
+        if (location[0] > 0 && location[1] < tempGrid[location[0]].length - 1) {
+            increaseHint(tempGrid, [location[0]-1, location[1]+1]);
+        }
+        // top
+        if (location[0] > 0) {
+            increaseHint(tempGrid, [location[0]-1, location[1]]);
+        }
+    }
 
+    function increaseHint(tempGrid: TileData[][], location:Array<number>) {
+        if (tempGrid[location[0]][location[1]].status !== -1)
+            tempGrid[location[0]][location[1]].status += 1;
     }
 
     useEffect(() => {
@@ -67,8 +104,8 @@ const DrawBox = (props: { grid: TileData[][], revealTile: (a: Array<number>) => 
                             return (
                                 <th key={item.key}>
                                     <GridButton rowLength={row.length} open={item.revealed} onClick={() => props.revealTile([i,j])}>
-                                        {item.revealed && item.status}
-                                        {!item.revealed && item.status}
+                                        {item.revealed && Boolean(item.status) && item.status}
+                                        {!item.revealed && Boolean(item.status) && item.status}
                                     </GridButton>
                                 </th>
                             );
