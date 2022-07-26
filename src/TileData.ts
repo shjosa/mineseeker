@@ -4,19 +4,19 @@ import { useState } from "react";
 export class TileData {
     key: number;
     revealed: boolean;
-    status: string;
+    status: number;
     guessed: boolean;
 
     constructor(key: number) {
         this.key = key;
         this.revealed = false;
-        this.status = "safe";
+        this.status = 0;
         this.guessed = false;
     }
 
     reveal() {
         this.revealed = true;
-        if (this.status === "bomb") {
+        if (this.status === -1) {
             // game over, reveal all bombs
         }
     }

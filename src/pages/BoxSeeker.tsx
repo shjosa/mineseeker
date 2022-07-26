@@ -1,9 +1,11 @@
 import React, { useEffect, useState } from "react";
 import { TileData } from "../TileData";
+import { GridButton, GridContainer } from "./BoxSeeker.styles";
 
 export const BoxSeeker = () => {
+    const size = 10;
     const [refresh, setRefresh] = useState(false);
-    const [grid, setGrid] = useState<TileData[][]>(Array.from(Array(5), () => new Array(5)));
+    const [grid, setGrid] = useState<TileData[][]>(Array.from(Array(size), () => new Array(size)));
 
     function RevealTile(location: Array<number>) {
         const tempGrid = [...grid];
@@ -13,19 +15,22 @@ export const BoxSeeker = () => {
 
     useEffect(() => {
         let x = 0;
-
-        for(let i = 0; i < grid.length; i++) {
-            for(let j = 0; j < grid[i].length; j++) {
-                grid[i][j] = new TileData(parseInt((i + 1) + "" + (j + 1)));
+        const tempGrid: TileData[][] = Array.from(Array(size), () => new Array(size));
+        for(let i = 0; i < tempGrid.length; i++) {
+            for(let j = 0; j < tempGrid[i].length; j++) {
+                tempGrid[i][j] = new TileData(parseInt((i + 1) + "" + (j + 1)));
                 x += 1;
             }
         }
+        setGrid(tempGrid);
     }, []);
 
     return (
         <>
             <button onClick={() => setRefresh(value => !value)}>Test</button>
-            <DrawBox grid={grid} RevealTile={RevealTile} />
+            <GridContainer>
+                <DrawBox grid={grid} RevealTile={RevealTile} />
+            </GridContainer>
         </>
     );
 }
@@ -40,10 +45,10 @@ const DrawBox = (props: { grid: TileData[][], RevealTile: (a: Array<number>) => 
                         {row.map((item, j) => {
                             return (
                                 <th key={item.key}>
-                                    <button onClick={() => props.RevealTile([i,j])}>
+                                    <GridButton rowLength={row.length} onClick={() => props.RevealTile([i,j])}>
                                         {item.revealed && item.key}
-                                        {!item.revealed && "?"}
-                                    </button>
+                                        {!item.revealed && " "}
+                                    </GridButton>
                                 </th>
                             );
                         })}
