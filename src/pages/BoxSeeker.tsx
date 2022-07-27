@@ -9,17 +9,38 @@ export const BoxSeeker = () => {
     const [currBombCount, setCurrBombCount] = useState(0);
 
     function revealTile(location: Array<number>) {
-        const tempGrid = [...grid];
-        tempGrid[location[0]][location[1]].revealed = true;
+        const tempGrid = [...grid]; 
         if (currBombCount === 0) {
             genBombs(tempGrid, location);
         }
+        revealTiles(tempGrid, location);
         setGrid(tempGrid);
+    }
+    
+    function revealTiles(tempGrid: TileData[][], location: Array<number>) {
+        if (location[0] < 0 || location[0] > tempGrid.length-1 || location[1] < 0 || location[1] > tempGrid[0].length-1) {
+            return;
+        }
+        if (grid[location[0]][location[1]].revealed === true) {
+            return;
+        }
+        tempGrid[location[0]][location[1]].revealed = true;
+        if (tempGrid[location[0]][location[1]].status > 0) {
+            return;
+        }
+        revealTiles(tempGrid, [location[0]-1, location[1]-1]);
+        revealTiles(tempGrid, [location[0], location[1]-1]);
+        revealTiles(tempGrid, [location[0]+1, location[1]-1]);
+        revealTiles(tempGrid, [location[0]+1, location[1]]);
+        revealTiles(tempGrid, [location[0]+1, location[1]+1]);
+        revealTiles(tempGrid, [location[0], location[1]+1]);
+        revealTiles(tempGrid, [location[0]-1, location[1]+1]);
+        revealTiles(tempGrid, [location[0]-1, location[1]]);
     }
 
     function genBombs(tempGrid: TileData[][], location: Array<number>) {
         let curBC = currBombCount;
-        while (curBC < 5) {
+        while (curBC < 25) {
             let row = Math.floor(Math.random() * (tempGrid.length))
             let col = Math.floor(Math.random() * (tempGrid[row].length))
             if (tempGrid[row][col].status !== -1 && (row != location[0] || col != location[1])) {
@@ -105,7 +126,7 @@ const DrawBox = (props: { grid: TileData[][], revealTile: (a: Array<number>) => 
                                 <th key={item.key}>
                                     <GridButton rowLength={row.length} open={item.revealed} onClick={() => props.revealTile([i,j])}>
                                         {item.revealed && Boolean(item.status) && item.status}
-                                        {!item.revealed && Boolean(item.status) && item.status}
+                                        {!item.revealed && Boolean(item.status) && " "}
                                     </GridButton>
                                 </th>
                             );
