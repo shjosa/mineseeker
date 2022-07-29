@@ -4,17 +4,33 @@ import { GridButton, GridContainer } from "./BoxSeeker.styles";
 
 export const BoxSeeker = () => {
     const size = 10;
+    const [mineLocations, setMineLocations] = useState<number[][]>([]);
     const [refresh, setRefresh] = useState(false);
     const [grid, setGrid] = useState<TileData[][]>(Array.from(Array(size), () => new Array(size)));
-    const [currBombCount, setCurrBombCount] = useState(0);
+    const [currMineCount, setCurrMineCount] = useState(0);
+    const [gameOver, setGameOver] = useState(0);
 
     function revealTile(location: Array<number>) {
-        const tempGrid = [...grid]; 
-        if (currBombCount === 0) {
-            genBombs(tempGrid, location);
+        const tempGrid = [...grid];
+        if (tempGrid[location[0]][location[1]].status === -1) {
+            setGameOver(-1);
+            revealMines(tempGrid);
+            setGrid(tempGrid);
+            return;
+        }
+        if (currMineCount === 0) {
+            genMines(tempGrid, location);
         }
         revealTiles(tempGrid, location);
         setGrid(tempGrid);
+    }
+
+    function revealMines(tempGrid: TileData[][]) {
+        console.log(mineLocations);
+        for (let i = 0; i < mineLocations.length; i++) {
+            console.log("changing at " + i + ": " + mineLocations[i][0] + ", " + mineLocations[i][1]);
+            tempGrid[mineLocations[i][0]][mineLocations[i][1]].revealed = true;
+        }
     }
     
     function revealTiles(tempGrid: TileData[][], location: Array<number>) {
@@ -38,18 +54,21 @@ export const BoxSeeker = () => {
         revealTiles(tempGrid, [location[0]-1, location[1]]);
     }
 
-    function genBombs(tempGrid: TileData[][], location: Array<number>) {
-        let curBC = currBombCount;
-        while (curBC < 25) {
+    function genMines(tempGrid: TileData[][], location: Array<number>) {
+        let curMC = currMineCount;
+        let tempML = mineLocations;
+        while (curMC < 25) {
             let row = Math.floor(Math.random() * (tempGrid.length))
             let col = Math.floor(Math.random() * (tempGrid[row].length))
             if (tempGrid[row][col].status !== -1 && (row != location[0] || col != location[1])) {
                 tempGrid[row][col].bombify();
+                tempML.push([row, col]);
                 genHints(tempGrid, [row, col]);
-                curBC += 1;
+                curMC += 1;
             }
         }
-        setCurrBombCount(curBC);
+        setCurrMineCount(curMC);
+        setMineLocations(tempML);
     }
 
     function genHints(tempGrid: TileData[][], location: Array<number>) {
@@ -106,15 +125,15 @@ export const BoxSeeker = () => {
 
     return (
         <>
-            <button onClick={() => setRefresh(value => !value)}>Test</button>
+            <button onClick={() => setGameOver(1)}>Test</button>
             <GridContainer>
-                <DrawBox grid={grid} revealTile={revealTile} />
+                <DrawBox grid={grid} revealTile={revealTile} gameOver={gameOver} />
             </GridContainer>
         </>
     );
 }
 
-const DrawBox = (props: { grid: TileData[][], revealTile: (a: Array<number>) => void }) => {
+const DrawBox = (props: { grid: TileData[][], revealTile: (a: Array<number>) => void, gameOver: number }) => {
     console.log(props.grid);
     return (
         <table>
@@ -124,7 +143,7 @@ const DrawBox = (props: { grid: TileData[][], revealTile: (a: Array<number>) => 
                         {row.map((item, j) => {
                             return (
                                 <th key={item.key}>
-                                    <GridButton rowLength={row.length} open={item.revealed} onClick={() => props.revealTile([i,j])}>
+                                    <GridButton rowLength={row.length} tileValue={item.status} open={item.revealed} onClick={() => props.revealTile([i,j])} gameOver={props.gameOver} disabled={props.gameOver !== 0 ? true : false}>
                                         {item.revealed && Boolean(item.status) && item.status}
                                         {!item.revealed && Boolean(item.status) && " "}
                                     </GridButton>
