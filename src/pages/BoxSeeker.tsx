@@ -4,10 +4,10 @@ import { GridButton, GridContainer } from "./BoxSeeker.styles";
 
 export const BoxSeeker = () => {
     const size = 10;
-    const [mineLocations, setMineLocations] = useState<number[][]>([]);
     const [grid, setGrid] = useState<TileData[][]>(Array.from(Array(size), () => new Array(size)));
-    const currMineCount = useRef(0);
     const [gameOver, setGameOver] = useState(0);
+    const currMineCount = useRef(0);
+    const mineLocations = useRef<number[][]>([])
 
     function revealTile(location: Array<number>) {
         const tempGrid = [...grid];
@@ -29,9 +29,9 @@ export const BoxSeeker = () => {
 
     function revealMines(tempGrid: TileData[][]) {
         console.log(mineLocations);
-        for (let i = 0; i < mineLocations.length; i++) {
-            console.log("changing at " + i + ": " + mineLocations[i][0] + ", " + mineLocations[i][1]);
-            tempGrid[mineLocations[i][0]][mineLocations[i][1]].reveal();
+        for (let i = 0; i < mineLocations.current.length; i++) {
+            console.log("changing at " + i + ": " + mineLocations.current[i][0] + ", " + mineLocations.current[i][1]);
+            tempGrid[mineLocations.current[i][0]][mineLocations.current[i][1]].reveal();
         }
     }
     
@@ -57,18 +57,16 @@ export const BoxSeeker = () => {
     }
 
     function genMines(tempGrid: TileData[][], location: Array<number>) {
-        let tempML = mineLocations;
         while (currMineCount.current < 20) {
             let row = Math.floor(Math.random() * (tempGrid.length))
             let col = Math.floor(Math.random() * (tempGrid[row].length))
             if (tempGrid[row][col].status !== -1 && notWithinRange([row, col], location)) {
                 tempGrid[row][col].bombify();
-                tempML.push([row, col]);
+                mineLocations.current.push([row, col]);
                 genHints(tempGrid, [row, col]);
                 currMineCount.current += 1;
             }
         }
-        setMineLocations(tempML);
     }
 
     function notWithinRange(attemptedMine: Array<number>, clickLocation: Array<number>) {

@@ -13,7 +13,7 @@ export const GridButton = styled.button<{ rowLength: number, open: boolean, game
     font-family: 'Alfa Slab One';
     font-size: 2rem;
     &:hover {
-        background-color: white;
+        background-color: #EFEFF0;
     }
     &:disabled {
         color: black;
