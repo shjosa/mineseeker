@@ -12,6 +12,9 @@ export const GridButton = styled.button<{ rowLength: number, open: boolean, game
     background-color: ${props => props.open ? "#03B5AA" : "#037971"};
     font-family: 'Alfa Slab One';
     font-size: 2rem;
+    &:hover {
+        background-color: white;
+    }
     &:disabled {
         color: black;
         background-color: ${props => 

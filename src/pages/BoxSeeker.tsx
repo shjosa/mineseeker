@@ -1,24 +1,26 @@
-import React, { useEffect, useState } from "react";
-import { TileData } from "../TileData";
+import React, { useEffect, useRef, useState } from "react";
+import { TileData } from "../data/TileData";
 import { GridButton, GridContainer } from "./BoxSeeker.styles";
 
 export const BoxSeeker = () => {
     const size = 10;
     const [mineLocations, setMineLocations] = useState<number[][]>([]);
-    const [refresh, setRefresh] = useState(false);
     const [grid, setGrid] = useState<TileData[][]>(Array.from(Array(size), () => new Array(size)));
-    const [currMineCount, setCurrMineCount] = useState(0);
+    const currMineCount = useRef(0);
     const [gameOver, setGameOver] = useState(0);
 
     function revealTile(location: Array<number>) {
         const tempGrid = [...grid];
+        if (tempGrid[location[0]][location[1]].revealed) {
+            return;
+        }
         if (tempGrid[location[0]][location[1]].status === -1) {
             setGameOver(-1);
             revealMines(tempGrid);
             setGrid(tempGrid);
             return;
         }
-        if (currMineCount === 0) {
+        if (currMineCount.current === 0) {
             genMines(tempGrid, location);
         }
         revealTiles(tempGrid, location);
@@ -29,7 +31,7 @@ export const BoxSeeker = () => {
         console.log(mineLocations);
         for (let i = 0; i < mineLocations.length; i++) {
             console.log("changing at " + i + ": " + mineLocations[i][0] + ", " + mineLocations[i][1]);
-            tempGrid[mineLocations[i][0]][mineLocations[i][1]].revealed = true;
+            tempGrid[mineLocations[i][0]][mineLocations[i][1]].reveal();
         }
     }
     
@@ -40,7 +42,7 @@ export const BoxSeeker = () => {
         if (grid[location[0]][location[1]].revealed === true) {
             return;
         }
-        tempGrid[location[0]][location[1]].revealed = true;
+        tempGrid[location[0]][location[1]].reveal();
         if (tempGrid[location[0]][location[1]].status > 0) {
             return;
         }
@@ -55,20 +57,22 @@ export const BoxSeeker = () => {
     }
 
     function genMines(tempGrid: TileData[][], location: Array<number>) {
-        let curMC = currMineCount;
         let tempML = mineLocations;
-        while (curMC < 25) {
+        while (currMineCount.current < 20) {
             let row = Math.floor(Math.random() * (tempGrid.length))
             let col = Math.floor(Math.random() * (tempGrid[row].length))
-            if (tempGrid[row][col].status !== -1 && (row != location[0] || col != location[1])) {
+            if (tempGrid[row][col].status !== -1 && notWithinRange([row, col], location)) {
                 tempGrid[row][col].bombify();
                 tempML.push([row, col]);
                 genHints(tempGrid, [row, col]);
-                curMC += 1;
+                currMineCount.current += 1;
             }
         }
-        setCurrMineCount(curMC);
         setMineLocations(tempML);
+    }
+
+    function notWithinRange(attemptedMine: Array<number>, clickLocation: Array<number>) {
+        return !((attemptedMine[0] <= clickLocation[0]+1 && attemptedMine[0] >= clickLocation[0]-1) && (attemptedMine[1] <= clickLocation[1]+1 && attemptedMine[1] >= clickLocation[1]-1))
     }
 
     function genHints(tempGrid: TileData[][], location: Array<number>) {
@@ -112,12 +116,10 @@ export const BoxSeeker = () => {
     }
 
     useEffect(() => {
-        let x = 0;
         const tempGrid: TileData[][] = Array.from(Array(size), () => new Array(size));
         for(let i = 0; i < tempGrid.length; i++) {
             for(let j = 0; j < tempGrid[i].length; j++) {
                 tempGrid[i][j] = new TileData(parseInt((i + 1) + "" + (j + 1)));
-                x += 1;
             }
         }
         setGrid(tempGrid);
@@ -125,7 +127,6 @@ export const BoxSeeker = () => {
 
     return (
         <>
-            <button onClick={() => setGameOver(1)}>Test</button>
             <GridContainer>
                 <DrawBox grid={grid} revealTile={revealTile} gameOver={gameOver} />
             </GridContainer>
@@ -134,7 +135,6 @@ export const BoxSeeker = () => {
 }
 
 const DrawBox = (props: { grid: TileData[][], revealTile: (a: Array<number>) => void, gameOver: number }) => {
-    console.log(props.grid);
     return (
         <table>
             <tbody>
