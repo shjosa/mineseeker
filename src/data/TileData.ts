@@ -6,14 +6,12 @@ export class TileData {
     revealed: boolean;
     status: number;
     guessed: boolean;
-    lastChecked: number;
 
     constructor(key: number) {
         this.key = key;
         this.revealed = false;
         this.status = 0;
         this.guessed = false;
-        this.lastChecked = 0;
     }
 
     reveal() {
@@ -22,5 +20,9 @@ export class TileData {
 
     bombify() {
         this.status = -1;
+    }
+
+    guess() {
+        this.guessed = !this.guessed;
     }
 }
