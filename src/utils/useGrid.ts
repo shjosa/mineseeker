@@ -12,8 +12,22 @@ export function useGrid(size: number) {
         setFlagMode(m => !m);
     }
 
-    function revealTile(location: Array<number>) {
+    function handleClick(loc: number[], flagMode: boolean) {
+        console.log("hi");
         const tempGrid = [...grid];
+        if (flagMode) {
+            tempGrid[loc[0]][loc[1]].guess();
+        } else {
+            if (!tempGrid[loc[0]][loc[1]].guessed) {
+                console.log("wow");
+                revealTile(loc, tempGrid);
+            }
+        }
+        console.log("this happened");
+        setGrid(tempGrid);
+    }
+
+    function revealTile(location: Array<number>, tempGrid: TileData[][]) {
         if (tempGrid[location[0]][location[1]].revealed) {
             return;
         }
@@ -27,7 +41,6 @@ export function useGrid(size: number) {
             genMines(tempGrid, location);
         }
         revealTiles(tempGrid, location);
-        setGrid(tempGrid);
     }
     
     function revealMines(tempGrid: TileData[][]) {
@@ -124,5 +137,5 @@ export function useGrid(size: number) {
         setGrid(tempGrid);
     }, []);
 
-    return { grid, revealTile, gameOver, flagMode, handleFlagMode };
+    return { grid, revealTile, gameOver, flagMode, handleFlagMode, handleClick };
 }
