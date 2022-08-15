@@ -15,3 +15,8 @@ export const GridButton = styled.button<{ rowLength: number, open: boolean, game
             props.open ? props.tileValue === -1 ? "#FF5964" : "#03B5AA" : "#037971"};
     }
 `
+
+export const GridIcon = styled.img`
+    width: 99%;
+    height: 99%;
+`

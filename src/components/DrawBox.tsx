@@ -1,5 +1,6 @@
 import { TileData } from "../data/TileData";
-import { GridButton } from "./DrawBox.styles";
+import { GridButton, GridIcon } from "./DrawBox.styles";
+import flag from "../assets/flag.png";
 
 type DrawBoxProps = {
     grid: TileData[][];
@@ -26,8 +27,7 @@ export const DrawBox = (props: DrawBoxProps) => {
                                         disabled={props.gameOver !== 0 ? true : false}
                                         guessed={item.guessed}
                                     >
-                                        {item.revealed && Boolean(item.status) && item.status}
-                                        {!item.revealed && Boolean(item.status) && " "}
+                                        <DrawInterior status={item.status} revealed={item.revealed} guessed={item.guessed} />
                                     </GridButton>
                                 </th>
                             );
@@ -37,4 +37,18 @@ export const DrawBox = (props: DrawBoxProps) => {
             </tbody>
         </table>
     );
+}
+
+const DrawInterior = (props: { status: number, revealed: boolean, guessed: boolean }) => {
+    let component = <div />;
+    if (props.revealed) {
+        component = <div>{props.status > 0 ? props.status : ""}</div>
+    } else if (props.guessed) {
+        component = <GridIcon src={flag} />
+    }
+    return (
+        <>
+            {component}
+        </>
+    )
 }

@@ -13,17 +13,16 @@ export function useGrid(size: number) {
     }
 
     function handleClick(loc: number[], flagMode: boolean) {
-        console.log("hi");
         const tempGrid = [...grid];
         if (flagMode) {
-            tempGrid[loc[0]][loc[1]].guess();
+            if (currMineCount.current) {
+                tempGrid[loc[0]][loc[1]].guess();
+            }
         } else {
             if (!tempGrid[loc[0]][loc[1]].guessed) {
-                console.log("wow");
                 revealTile(loc, tempGrid);
             }
         }
-        console.log("this happened");
         setGrid(tempGrid);
     }
 
@@ -54,6 +53,9 @@ export function useGrid(size: number) {
             return;
         }
         if (grid[location[0]][location[1]].revealed === true) {
+            return;
+        }
+        if (grid[location[0]][location[1]].guessed === true) {
             return;
         }
         tempGrid[location[0]][location[1]].reveal();
