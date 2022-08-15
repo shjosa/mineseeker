@@ -9,11 +9,14 @@ type GridButtonProps = {
 };
 
 export const GridButton = styled.button<GridButtonProps>`
+    display: flex;
     width: 4rem;
     height: 4rem;
     background-color: ${props => props.open ? "#03B5AA" : "#037971"};
     font-family: 'Alfa Slab One';
     font-size: 2rem;
+    justify-content: center;
+    align-items: center;
     &:hover {
         background-color: #EFEFF0;
     }
@@ -25,6 +28,6 @@ export const GridButton = styled.button<GridButtonProps>`
 `
 
 export const GridIcon = styled.img`
-    width: 99%;
-    height: 99%;
+    width: 90%;
+    height: 90%;
 `
