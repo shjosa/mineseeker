@@ -1,6 +1,14 @@
 import styled from "styled-components";
 
-export const GridButton = styled.button<{ rowLength: number, open: boolean, gameOver: number, tileValue: number, guessed: boolean }>`
+type GridButtonProps = {
+    rowLength: number;
+    open: boolean;
+    gameOver: number;
+    tileValue: number;
+    guessed: boolean;
+};
+
+export const GridButton = styled.button<GridButtonProps>`
     width: 4rem;
     height: 4rem;
     background-color: ${props => props.open ? "#03B5AA" : "#037971"};
