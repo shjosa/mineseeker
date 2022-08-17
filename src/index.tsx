@@ -5,6 +5,7 @@ import App from './App';
 import reportWebVitals from './reportWebVitals';
 import { BoxSeeker } from './pages/BoxSeeker';
 import { HexSeeker } from './pages/HexSeeker';
+import { HomePage } from './pages/HomePage';
 
 const root = ReactDOM.createRoot(
   document.getElementById('root') as HTMLElement
@@ -14,6 +15,10 @@ root.render(
     <BrowserRouter>
       <Routes>
         <Route path="/" element={<App />}>
+          <Route 
+            index
+            element={<HomePage />}
+          />
           <Route path="box-seeker" element={<BoxSeeker />} key={document.location.href} />
           <Route path="hex-seeker" element={<HexSeeker />} />
         </Route>
