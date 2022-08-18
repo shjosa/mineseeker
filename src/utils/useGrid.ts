@@ -2,11 +2,24 @@ import { useState, useRef, useEffect } from "react";
 import { TileData } from "../data/TileData";
 
 export function useGrid(size: number) {
-    const [grid, setGrid] = useState<TileData[][]>(Array.from(Array(size), () => new Array(size)));
+    const [grid, setGrid] = useState<TileData[][]>([]);
     const [gameOver, setGameOver] = useState(0);
     const currMineCount = useRef(0);
     const mineLocations = useRef<number[][]>([]);
     const [flagMode, setFlagMode] = useState(false);
+
+    function init(size: number) {
+        currMineCount.current = 0;
+        mineLocations.current = [];
+        setGameOver(0);
+        const tempGrid: TileData[][] = Array.from(Array(size), () => new Array(size));
+        for(let i = 0; i < tempGrid.length; i++) {
+            for(let j = 0; j < tempGrid[i].length; j++) {
+                tempGrid[i][j] = new TileData(parseInt((i + 1) + "" + (j + 1)));
+            }
+        }
+        setGrid(tempGrid);
+    }
 
     function handleFlagMode() {
         setFlagMode(m => !m);
@@ -15,9 +28,7 @@ export function useGrid(size: number) {
     function handleClick(loc: number[], flagMode: boolean) {
         const tempGrid = [...grid];
         if (flagMode) {
-            if (currMineCount.current) {
-                tempGrid[loc[0]][loc[1]].guess();
-            }
+            tempGrid[loc[0]][loc[1]].guess();
         } else {
             if (!tempGrid[loc[0]][loc[1]].guessed) {
                 revealTile(loc, tempGrid);
@@ -73,7 +84,14 @@ export function useGrid(size: number) {
     }
     
     function genMines(tempGrid: TileData[][], location: Array<number>) {
-        while (currMineCount.current < 20) {
+        let clickArea = 9;
+        if ((location[0] === 0 || location[0] === tempGrid.length-1) && (location[1] === 0 || location[1] === tempGrid.length-1)) {
+            clickArea = 4
+        }
+        if (tempGrid.length ** 2 - clickArea < 1 /* mineCount */) {
+            return;
+        }
+        while (currMineCount.current < 1 /* mineCount */) {
             let row = Math.floor(Math.random() * (tempGrid.length))
             let col = Math.floor(Math.random() * (tempGrid[row].length))
             if (tempGrid[row][col].status !== -1 && notWithinRange([row, col], location)) {
@@ -128,16 +146,6 @@ export function useGrid(size: number) {
         if (tempGrid[location[0]][location[1]].status !== -1)
             tempGrid[location[0]][location[1]].status += 1;
     }
-    
-    useEffect(() => {
-        const tempGrid: TileData[][] = Array.from(Array(size), () => new Array(size));
-        for(let i = 0; i < tempGrid.length; i++) {
-            for(let j = 0; j < tempGrid[i].length; j++) {
-                tempGrid[i][j] = new TileData(parseInt((i + 1) + "" + (j + 1)));
-            }
-        }
-        setGrid(tempGrid);
-    }, []);
 
-    return { grid, revealTile, gameOver, flagMode, handleFlagMode, handleClick };
+    return { init, grid, revealTile, gameOver, flagMode, handleFlagMode, handleClick };
 }

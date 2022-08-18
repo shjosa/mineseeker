@@ -10,6 +10,7 @@ type DrawBoxProps = {
 };
 
 export const DrawBox = (props: DrawBoxProps) => {
+    console.log(props.grid);
     return (
         <table>
             <tbody>

@@ -6,21 +6,21 @@ import { DrawBox } from "../components/DrawBox";
 import { Sidebar } from "../components/Sidebar";
 
 export const BoxSeeker = () => {
-    const size = 10;
-    const { grid, gameOver, flagMode, handleFlagMode, handleClick } = useGrid(size);
+    const { init, grid, gameOver, flagMode, handleFlagMode, handleClick } = useGrid(2);
 
     return (
         <>
             <PageContainer>
-                <Sidebar />
-                <GameContainer>
-                    <Switch flagMode={flagMode} handleFlagMode={handleFlagMode} />
-                    <GridContainer>
-                        <DrawBox grid={grid} gameOver={gameOver} handleClick={handleClick} flagMode={flagMode} />
-                    </GridContainer>
-                </GameContainer>
+                <Sidebar gameInit={init}/>
+                {grid.length > 0 &&
+                    <GameContainer>
+                        <Switch flagMode={flagMode} handleFlagMode={handleFlagMode} />
+                        <GridContainer>
+                            <DrawBox grid={grid} gameOver={gameOver} handleClick={handleClick} flagMode={flagMode} />
+                        </GridContainer>
+                    </GameContainer>
+                }
             </PageContainer>
-            
         </>
     );
 }
