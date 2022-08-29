@@ -5,10 +5,11 @@ export function useGrid(size: number) {
     const [grid, setGrid] = useState<TileData[][]>([]);
     const [gameOver, setGameOver] = useState(0);
     const currMineCount = useRef(0);
+    const mineCount = useRef(0);
     const mineLocations = useRef<number[][]>([]);
     const [flagMode, setFlagMode] = useState(false);
 
-    function init(size: number) {
+    function init(size: number, mines: number) {
         currMineCount.current = 0;
         mineLocations.current = [];
         setGameOver(0);
@@ -18,6 +19,7 @@ export function useGrid(size: number) {
                 tempGrid[i][j] = new TileData(parseInt((i + 1) + "" + (j + 1)));
             }
         }
+        mineCount.current = mines;
         setGrid(tempGrid);
     }
 
@@ -88,10 +90,10 @@ export function useGrid(size: number) {
         if ((location[0] === 0 || location[0] === tempGrid.length-1) && (location[1] === 0 || location[1] === tempGrid.length-1)) {
             clickArea = 4
         }
-        if (tempGrid.length ** 2 - clickArea < 1 /* mineCount */) {
+        if (tempGrid.length ** 2 - clickArea < mineCount.current) {
             return;
         }
-        while (currMineCount.current < 1 /* mineCount */) {
+        while (currMineCount.current < mineCount.current) {
             let row = Math.floor(Math.random() * (tempGrid.length))
             let col = Math.floor(Math.random() * (tempGrid[row].length))
             if (tempGrid[row][col].status !== -1 && notWithinRange([row, col], location)) {
