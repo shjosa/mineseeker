@@ -24,5 +24,6 @@ export class TileData {
 
     guess() {
         this.guessed = !this.guessed;
+        return this.guessed;
     }
 }

@@ -8,6 +8,7 @@ export function useGrid(size: number) {
     const mineCount = useRef(0);
     const mineLocations = useRef<number[][]>([]);
     const [flagMode, setFlagMode] = useState(false);
+    const [flagsPlaced, setFlagsPlaced] = useState(0);
 
     function init(size: number, mines: number) {
         currMineCount.current = 0;
@@ -27,10 +28,20 @@ export function useGrid(size: number) {
         setFlagMode(m => !m);
     }
 
+    function handleGuess(tile: TileData) {
+        if (!tile.revealed) {
+            tile.guess() ? setFlagsPlaced(e => e + 1) : setFlagsPlaced(e => e - 1);
+        }
+    }
+
+    function getGuessesRemaining() {
+        return mineCount.current - flagsPlaced;
+    }
+
     function handleClick(loc: number[], flagMode: boolean) {
         const tempGrid = [...grid];
         if (flagMode) {
-            tempGrid[loc[0]][loc[1]].guess();
+            handleGuess(tempGrid[loc[0]][loc[1]]);
         } else {
             if (!tempGrid[loc[0]][loc[1]].guessed) {
                 revealTile(loc, tempGrid);
@@ -149,5 +160,5 @@ export function useGrid(size: number) {
             tempGrid[location[0]][location[1]].status += 1;
     }
 
-    return { init, grid, revealTile, gameOver, flagMode, handleFlagMode, handleClick };
+    return { init, grid, revealTile, gameOver, flagMode, handleFlagMode, getGuessesRemaining, handleClick };
 }

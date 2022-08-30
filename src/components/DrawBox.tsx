@@ -27,6 +27,7 @@ export const DrawBox = (props: DrawBoxProps) => {
                                         gameOver={props.gameOver} 
                                         disabled={props.gameOver !== 0 ? true : false}
                                         guessed={item.guessed}
+                                        gridSize={props.grid.length}
                                     >
                                         <DrawInterior status={item.status} revealed={item.revealed} guessed={item.guessed} />
                                     </GridButton>

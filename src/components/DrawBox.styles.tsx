@@ -6,12 +6,13 @@ type GridButtonProps = {
     gameOver: number;
     tileValue: number;
     guessed: boolean;
+    gridSize: number;
 };
 
 export const GridButton = styled.button<GridButtonProps>`
     display: flex;
-    width: 4rem;
-    height: 4rem;
+    width: ${props => props.gridSize > 16 ? 2.5 : 4}rem;
+    height: ${props => props.gridSize > 16 ? 2.5 : 4}rem;
     background-color: ${props => props.open ? "#03B5AA" : "#037971"};
     font-family: 'Alfa Slab One';
     font-size: 2rem;

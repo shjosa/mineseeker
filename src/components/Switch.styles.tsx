@@ -1,7 +1,7 @@
 import { url } from "inspector";
 import styled from "styled-components";
 import flag from "../assets/flag.png";
-import hand from "../assets/hand.png"
+import hand from "../assets/hand.png";
 
 export const SwitchLabel = styled.label`
     display: flex;

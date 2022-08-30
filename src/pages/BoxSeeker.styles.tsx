@@ -14,7 +14,7 @@ export const PageContainer = styled.div`
 export const GameContainer = styled.div`
     display: flex;
     flex-direction: column;
-    max-width: 80vw;
+    width: 80vw;
     max-height: 90vh;
     align-items: center;
 `

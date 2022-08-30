@@ -1,5 +1,5 @@
 import { useState } from "react"
-import { SwitchButton, SwitchInput, SwitchLabel } from "./Switch.styles"
+import { SwitchButton, SwitchInput, SwitchLabel } from "./Switch.styles";
 
 type SwitchProps = {
     flagMode: boolean;
