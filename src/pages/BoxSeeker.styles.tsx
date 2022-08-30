@@ -1,8 +1,10 @@
 import styled from "styled-components";
-import flag from "../assets/flag.png";
 
 export const GridContainer = styled.div`
-    //width: 100%;
+    max-width: 100%;
+    max-height: 100%;
+    overflow: auto;
+    position: relative;
 `
 
 export const PageContainer = styled.div`
@@ -12,6 +14,7 @@ export const PageContainer = styled.div`
 export const GameContainer = styled.div`
     display: flex;
     flex-direction: column;
-    width: 100%;
+    max-width: 80vw;
+    max-height: 90vh;
     align-items: center;
 `
