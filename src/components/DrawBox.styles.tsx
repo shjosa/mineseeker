@@ -18,14 +18,15 @@ export const GridButton = styled.button<GridButtonProps>`
     font-size: 2rem;
     justify-content: center;
     align-items: center;
-    &:hover {
+    box-shadow: 1px 1px 2px grey;
+    &:hover:not(:disabled) {
         cursor: pointer;
         background-color: #EFEFF0;
     }
     &:disabled {
         cursor: initial;
         color: black;
-        ${props => props.tileValue === -1 ? "background-color: #FF5964" : ""};
+        ${props => props.tileValue === -1 ? props.gameOver === 1 ? "background-color: #C7D66D" : "background-color: #FF5964" : ""};
     }
 `
 
