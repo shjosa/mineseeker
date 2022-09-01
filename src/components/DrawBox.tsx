@@ -10,7 +10,6 @@ type DrawBoxProps = {
 };
 
 export const DrawBox = (props: DrawBoxProps) => {
-    console.log(props.grid);
     return (
         <table>
             <tbody>
@@ -25,7 +24,7 @@ export const DrawBox = (props: DrawBoxProps) => {
                                         open={item.revealed} 
                                         onClick={() => props.handleClick([i, j], props.flagMode)} 
                                         gameOver={props.gameOver} 
-                                        disabled={props.gameOver !== 0 ? true : false}
+                                        disabled={item.revealed || props.gameOver !== 0 ? true : false}
                                         guessed={item.guessed}
                                         gridSize={props.grid.length}
                                     >

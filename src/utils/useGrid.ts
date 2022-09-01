@@ -7,12 +7,20 @@ export function useGrid(size: number) {
     const currMineCount = useRef(0);
     const mineCount = useRef(0);
     const mineLocations = useRef<number[][]>([]);
+    const tilesRemaining = useRef(0);
     const [flagMode, setFlagMode] = useState(false);
     const [flagsPlaced, setFlagsPlaced] = useState(0);
+
+    useEffect(() => {
+        if (tilesRemaining.current === mineCount.current) {
+            setGameOver(1);
+        }
+    }, [tilesRemaining.current])
 
     function init(size: number, mines: number) {
         currMineCount.current = 0;
         mineLocations.current = [];
+        setFlagsPlaced(0);
         setGameOver(0);
         const tempGrid: TileData[][] = Array.from(Array(size), () => new Array(size));
         for(let i = 0; i < tempGrid.length; i++) {
@@ -21,6 +29,7 @@ export function useGrid(size: number) {
             }
         }
         mineCount.current = mines;
+        tilesRemaining.current = tempGrid.length ** 2;
         setGrid(tempGrid);
     }
 
@@ -61,7 +70,7 @@ export function useGrid(size: number) {
             return;
         }
         if (currMineCount.current === 0) {
-            genMines(tempGrid, location);
+            genBoxMines(tempGrid, location);
         }
         revealTiles(tempGrid, location);
     }
@@ -83,6 +92,7 @@ export function useGrid(size: number) {
             return;
         }
         tempGrid[location[0]][location[1]].reveal();
+        tilesRemaining.current -= 1;
         if (tempGrid[location[0]][location[1]].status > 0) {
             return;
         }
@@ -96,7 +106,7 @@ export function useGrid(size: number) {
         revealTiles(tempGrid, [location[0]-1, location[1]]);
     }
     
-    function genMines(tempGrid: TileData[][], location: Array<number>) {
+    function genBoxMines(tempGrid: TileData[][], location: Array<number>) {
         let clickArea = 9;
         if ((location[0] === 0 || location[0] === tempGrid.length-1) && (location[1] === 0 || location[1] === tempGrid.length-1)) {
             clickArea = 4
@@ -110,7 +120,7 @@ export function useGrid(size: number) {
             if (tempGrid[row][col].status !== -1 && notWithinRange([row, col], location)) {
                 tempGrid[row][col].bombify();
                 mineLocations.current.push([row, col]);
-                genHints(tempGrid, [row, col]);
+                genBoxHints(tempGrid, [row, col]);
                 currMineCount.current += 1;
             }
         }
@@ -120,7 +130,7 @@ export function useGrid(size: number) {
         return !((attemptedMine[0] <= clickLocation[0]+1 && attemptedMine[0] >= clickLocation[0]-1) && (attemptedMine[1] <= clickLocation[1]+1 && attemptedMine[1] >= clickLocation[1]-1))
     }
     
-    function genHints(tempGrid: TileData[][], location: Array<number>) {
+    function genBoxHints(tempGrid: TileData[][], location: Array<number>) {
         // top left
         if (location[0] > 0 && location[1] > 0) {
             increaseHint(tempGrid, [location[0]-1, location[1]-1]);

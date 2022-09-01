@@ -19,12 +19,13 @@ export const GridButton = styled.button<GridButtonProps>`
     justify-content: center;
     align-items: center;
     &:hover {
+        cursor: pointer;
         background-color: #EFEFF0;
     }
     &:disabled {
+        cursor: initial;
         color: black;
-        background-color: ${props => 
-            props.open ? props.tileValue === -1 ? "#FF5964" : "#03B5AA" : "#037971"};
+        ${props => props.tileValue === -1 ? "background-color: #FF5964" : ""};
     }
 `
 
